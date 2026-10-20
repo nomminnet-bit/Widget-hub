@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0b0f19">
+  <title>Mine Widgets</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #151c2c;
+      --border: #263147;
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --green: #2ea043;
+      --green-text: #3fb950;
+      --red: #da3633;
+      --red-text: #f85149;
+      --accent: #f7931a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    /* App Topbar */
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--card);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green-text);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green-text);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Widget Grid */
+    .widget-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Standard Widget Kort */
+    .widget {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    }
+
+    .widget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .widget-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .btc-icon {
+      background: var(--accent);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .change-badge {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .price-main {
+      font-size: 34px;
+      font-weight: 800;
+      margin: 8px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+
+    .up { color: var(--green-text); }
+    .down { color: var(--red-text); }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stats-row span strong {
+      color: var(--text);
+    }
+
+    /* Pladsholder til fremtidige widgets */
+    .widget-placeholder {
+      border: 1px dashed var(--border);
+      background: rgba(21, 28, 44, 0.4);
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="app-title">Widget Hub</div>
+    <div class="live-badge">
+      <span class="dot" id="status-dot"></span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <main class="widget-grid">
+
+    <!-- ==========================================
+         WIDGET 1: BITCOIN LIVE TRACKER
+         ========================================== -->
+    <section class="widget" id="btc-widget">
+      <div class="widget-header">
+        <div class="widget-title">
+          <span class="btc-icon">₿</span> Bitcoin Live
+        </div>
+        <div id="btc-change" class="change-badge">0.00%</div>
+      </div>
+
+      <!-- Klik på prisen for at skifte mellem USD og DKK -->
+      <div id="btc-price" class="price-main" onclick="toggleCurrency()">
+        Indlæser...
+      </div>
+      <div style="font-size: 11px; color: var(--muted);">
+        Tryk på prisen for at skifte mellem USD og DKK
+      </div>
+
+      <div class="stats-row">
+        <span>24t Høj: <strong id="btc-high">-</strong></span>
+        <span>24t Lav: <strong id="btc-low">-</strong></span>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         NYE WIDGETS INDSÆTTES HERUNDER I FREMTIDEN
+         ========================================== -->
+    <section class="widget widget-placeholder">
+      + Klar til næste widget<br>
+      <small>(Sig til, hvad vi skal bygge som nummer 2!)</small>
+    </section>
+
+  </main>
+
+  <script>
+    // Ur i toppen af appen
+    setInterval(() => {
+      document.getElementById('clock').textContent = new Date().toLocaleTimeString('da-DK');
+    }, 1000);
+
+    // === BITCOIN WIDGET LOGIK ===
+    let showDKK = false;
+    let usdToDkkRate = 6.85; // Standard-kurs indtil live valutakurs er hentet
+    let lastPriceUSD = 0;
+    let currentPriceUSD = 0;
+    let high24hUSD = 0;
+    let low24hUSD = 0;
+
+    // Hent aktuel USD -> DKK valutakurs
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.rates && data.rates.DKK) {
+          usdToDkkRate = data.rates.DKK;
+        }
+      })
+      .catch(() => console.log('Bruger fallback DKK-kurs'));
+
+    function toggleCurrency() {
+      showDKK = !showDKK;
+      renderBtcData();
+    }
+
+    function formatPrice(usdValue) {
+      if (showDKK) {
+        const dkk = usdValue * usdToDkkRate;
+        return dkk.toLocaleString('da-DK', { maximumFractionDigits: 0 }) + ' kr.';
+      }
+      return '$' + usdValue.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function renderBtcData() {
+      if (!currentPriceUSD) return;
+      const priceEl = document.getElementById('btc-price');
+      priceEl.textContent = formatPrice(currentPriceUSD);
+      document.getElementById('btc-high').textContent = formatPrice(high24hUSD);
+      document.getElementById('btc-low').textContent = formatPrice(low24hUSD);
+    }
+
+    // Forbind til Binance 24t Ticker Stream
+    function connectBinance() {
+      const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+      const priceEl = document.getElementById('btc-price');
+      const changeEl = document.getElementById('btc-change');
+      const dotEl = document.getElementById('status-dot');
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        currentPriceUSD = parseFloat(data.c);
+        high24hUSD = parseFloat(data.h);
+        low24hUSD = parseFloat(data.l);
+        const percentChange = parseFloat(data.P);
+
+        // Farveskift ved prishop
+        if (lastPriceUSD !== 0) {
+          if (currentPriceUSD > lastPriceUSD) priceEl.className = 'price-main up';
+          else if (currentPriceUSD < lastPriceUSD) priceEl.className = 'price-main down';
+        }
+        lastPriceUSD = currentPriceUSD;
+
+        // 24t procent-badge
+        const sign = percentChange >= 0 ? '+' : '';
+        changeEl.textContent = `${sign}${percentChange.toFixed(2)}%`;
+        changeEl.style.color = percentChange >= 0 ? 'var(--green-text)' : 'var(--red-text)';
+
+        renderBtcData();
+      };
+
+      ws.onclose = () => {
+        dotEl.style.background = 'var(--red-text)';
+        setTimeout(connectBinance, 3000); // Genforbind automatisk
+      };
+    }
+
+    connectBinance();
+  </script>
+</body>
+</html>
