@@ -467,6 +467,8 @@ jobs:
       - name: Udgiv WidgetHub.apk under Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0
-          name: "Widget Hub App (APK)"
-          files: 
+        tag_name: v1.0
+        name: "Widget Hub App (APK)"
+        files: |
+         WidgetHub.apk
+        generate_release_notes: true
